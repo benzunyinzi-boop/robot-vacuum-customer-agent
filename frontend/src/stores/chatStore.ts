@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import type { Conversation, Message } from '../types'
+import { generateId } from '../lib/utils'
 
 interface ChatState {
   conversations: Conversation[]
@@ -24,7 +25,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   toolStatus: null,
 
   createConversation: () => {
-    const id = crypto.randomUUID()
+    const id = generateId()
     const conversation: Conversation = {
       id,
       title: '新对话',

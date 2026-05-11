@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react'
 import { useChatStore } from '../stores/chatStore'
 import { streamChat, mockStreamChat } from '../lib/api'
+import { generateId } from '../lib/utils'
 import type { Message } from '../types'
 
 const TOOL_LABELS: Record<string, string> = {
@@ -36,7 +37,7 @@ export function useChat() {
       }
 
       const userMessage: Message = {
-        id: crypto.randomUUID(),
+        id: generateId(),
         role: 'user',
         content: content.trim(),
         createdAt: new Date(),
@@ -44,7 +45,7 @@ export function useChat() {
       addMessage(convId, userMessage)
 
       const assistantMessage: Message = {
-        id: crypto.randomUUID(),
+        id: generateId(),
         role: 'assistant',
         content: '',
         createdAt: new Date(),
