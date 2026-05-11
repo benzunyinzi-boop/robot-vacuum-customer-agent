@@ -5,7 +5,7 @@
 
 # 核心大模型框架
 langchain==0.3.7                  # LLM 应用开发核心框架
-langchain-core==0.3.18            # LangChain 核心组件
+langchain-core>=0.3.78,<0.4.0     # LangChain 核心组件（langchain-openai 要求 >=0.3.78）
 langchain-community==0.3.7        # 社区集成组件（各类模型/工具）
 langchain-openai==0.3.35          # OpenAI 兼容接口（用于 DashScope OpenAI-compatible endpoint）
 
