@@ -184,3 +184,26 @@ streamlit run app.py
 - 本项目仅为学习与交流，如果觉得这个项目有帮助，别忘了点个Star！
 
 ---
+
+## 商用改造指南
+
+### 配置文件
+配置文件已分为开发、测试和生产环境，位于 `config/agent.yml`。
+
+### 日志功能
+日志功能已增强，支持多级日志记录，日志文件存储在 `logs/` 目录下。
+
+### Docker 支持
+项目已支持 Docker 部署：
+1. 构建镜像：`docker build -t langchain-agent .`
+2. 启动容器：`docker-compose up`
+
+### 部署
+生产环境建议使用以下命令启动：
+```bash
+docker-compose -f docker-compose.yml up -d
+```
+
+### 安全性
+- 确保配置文件中的敏感信息（如 API 密钥）已加密或存储在安全的环境变量中。
+- 使用 HTTPS 确保数据传输安全。

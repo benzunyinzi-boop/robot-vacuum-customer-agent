@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智扫通智能客服</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#0f0f23',
+                            sidebar: '#1a1a2e',
+                            card: '#16213e',
+                            border: '#334155',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans SC', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        .glow-border {
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.08), inset 0 0 15px rgba(0, 212, 255, 0.03);
+        }
+        .glow-border-active {
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.15), 0 0 40px rgba(124, 58, 237, 0.08);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #00d4ff, #7c3aed);
+        }
+        .gradient-bg-subtle {
+            background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(124,58,237,0.1));
+        }
+        .user-bubble {
+            background: linear-gradient(135deg, #1e40af, #7c3aed);
+        }
+        .light .user-bubble {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+        }
+        .ai-bubble-dark {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        .ai-bubble-light {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+        }
+        .sidebar-item-active {
+            background: linear-gradient(90deg, rgba(0,212,255,0.1), transparent);
+            border-left: 3px solid #00d4ff;
+        }
+        .light .sidebar-item-active {
+            background: linear-gradient(90deg, rgba(37,99,235,0.08), transparent);
+            border-left: 3px solid #2563eb;
+        }
+        .input-glow:focus-within {
+            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.3), 0 0 20px rgba(0, 212, 255, 0.1);
+        }
+        .light .input-glow:focus-within {
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3), 0 0 20px rgba(37, 99, 235, 0.05);
+        }
+        .quick-card {
+            background: rgba(22, 33, 62, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            transition: all 0.3s ease;
+        }
+        .quick-card:hover {
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .light .quick-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+        .light .quick-card:hover {
+            border-color: rgba(37, 99, 235, 0.5);
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.1);
+        }
+        .typing-dot {
+            animation: typing 1.4s infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+            30% { opacity: 1; transform: scale(1); }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .theme-transition {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        .scrollbar-thin::-webkit-scrollbar { width: 4px; }
+        .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+        .light .scrollbar-thin::-webkit-scrollbar-thumb { background: #cbd5e1; }
+
+        .logo-glow {
+            filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.4));
+        }
+        .divider-glow {
+            background: linear-gradient(180deg, transparent, rgba(0,212,255,0.3), transparent);
+            width: 1px;
+        }
+        .light .divider-glow {
+            background: linear-gradient(180deg, transparent, rgba(37,99,235,0.2), transparent);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+    <div id="app" class="dark">
+        <!-- 整体容器 -->
+        <div class="flex h-screen theme-transition dark:bg-dark-bg bg-gray-50">
+
+            <!-- 侧边栏 -->
+            <aside class="w-[280px] flex flex-col theme-transition dark:bg-dark-sidebar bg-white border-r dark:border-dark-border border-gray-200 relative">
+                <!-- 侧边栏头部 -->
+                <div class="p-4 border-b dark:border-dark-border border-gray-200">
+                    <button class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg gradient-bg text-white font-medium text-sm hover:opacity-90 transition-opacity">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        新建对话
+                    </button>
+                </div>
+
+                <!-- 会话列表 -->
+                <div class="flex-1 overflow-y-auto scrollbar-thin p-3 space-y-1">
+                    <!-- 今天 -->
+                    <p class="text-xs font-medium dark:text-gray-500 text-gray-400 px-3 py-2 uppercase tracking-wider">今天</p>
+                    <div class="sidebar-item-active rounded-lg px-3 py-2.5 cursor-pointer">
+                        <p class="text-sm dark:text-gray-200 text-gray-800 truncate font-medium">扫地机器人无法回充怎么办</p>
+                        <p class="text-xs dark:text-gray-500 text-gray-400 mt-0.5">2 分钟前</p>
+                    </div>
+                    <div class="rounded-lg px-3 py-2.5 cursor-pointer hover:dark:bg-dark-card hover:bg-gray-100 transition-colors border-l-[3px] border-transparent">
+                        <p class="text-sm dark:text-gray-300 text-gray-700 truncate">扫地机器人选购建议</p>
+                        <p class="text-xs dark:text-gray-500 text-gray-400 mt-0.5">1 小时前</p>
+                    </div>
+
+                    <!-- 昨天 -->
+                    <p class="text-xs font-medium dark:text-gray-500 text-gray-400 px-3 py-2 mt-3 uppercase tracking-wider">昨天</p>
+                    <div class="rounded-lg px-3 py-2.5 cursor-pointer hover:dark:bg-dark-card hover:bg-gray-100 transition-colors border-l-[3px] border-transparent">
+                        <p class="text-sm dark:text-gray-300 text-gray-700 truncate">生成我的使用报告</p>
+                        <p class="text-xs dark:text-gray-500 text-gray-400 mt-0.5">昨天 14:30</p>
+                    </div>
+                    <div class="rounded-lg px-3 py-2.5 cursor-pointer hover:dark:bg-dark-card hover:bg-gray-100 transition-colors border-l-[3px] border-transparent">
+                        <p class="text-sm dark:text-gray-300 text-gray-700 truncate">机器人日常维护保养指南</p>
+                        <p class="text-xs dark:text-gray-500 text-gray-400 mt-0.5">昨天 09:15</p>
+                    </div>
+
+                    <!-- 更早 -->
+                    <p class="text-xs font-medium dark:text-gray-500 text-gray-400 px-3 py-2 mt-3 uppercase tracking-wider">更早</p>
+                    <div class="rounded-lg px-3 py-2.5 cursor-pointer hover:dark:bg-dark-card hover:bg-gray-100 transition-colors border-l-[3px] border-transparent">
+                        <p class="text-sm dark:text-gray-300 text-gray-700 truncate">扫拖一体机和扫地机的区别</p>
+                        <p class="text-xs dark:text-gray-500 text-gray-400 mt-0.5">3 天前</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 发光分割线 -->
+            <div class="divider-glow"></div>
+
+            <!-- 主内容区 -->
+            <main class="flex-1 flex flex-col">
+                <!-- 顶部导航 -->
+                <header class="h-16 flex items-center justify-between px-6 border-b dark:border-dark-border border-gray-200 theme-transition dark:bg-dark-bg bg-gray-50">
+                    <div class="flex items-center gap-3">
+                        <!-- Logo -->
+                        <div class="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center logo-glow">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </div>
+                        <h1 class="text-lg font-semibold dark:text-white text-gray-900">智扫通</h1>
+                        <span class="text-xs dark:text-gray-500 text-gray-400 bg-dark-card dark:bg-dark-card bg-gray-100 px-2 py-0.5 rounded-full">智能客服</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <!-- 主题切换 -->
+                        <button id="themeToggle" class="p-2 rounded-lg dark:hover:bg-dark-card hover:bg-gray-200 transition-colors" title="切换主题">
+                            <!-- 月亮图标 (深色模式显示) -->
+                            <svg id="moonIcon" class="w-5 h-5 dark:text-gray-400 text-gray-600 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                            <!-- 太阳图标 (浅色模式显示) -->
+                            <svg id="sunIcon" class="w-5 h-5 dark:text-gray-400 text-gray-600 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- 聊天区域 -->
+                <div class="flex-1 overflow-y-auto scrollbar-thin" id="chatArea">
+                    <div class="max-w-3xl mx-auto px-6 py-8 space-y-6">
+
+                        <!-- AI 消息 1 -->
+                        <div class="flex gap-3 fade-in">
+                            <div class="w-8 h-8 rounded-lg gradient-bg flex-shrink-0 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="ai-bubble-dark dark:block hidden rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%]">
+                                    <p class="text-sm text-gray-200 leading-relaxed">你好！我是智扫通智能客服，专注于扫地机器人和扫拖一体机器人的咨询服务。有什么可以帮你的吗？</p>
+                                </div>
+                                <div class="ai-bubble-light dark:hidden block rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%]">
+                                    <p class="text-sm text-gray-700 leading-relaxed">你好！我是智扫通智能客服，专注于扫地机器人和扫拖一体机器人的咨询服务。有什么可以帮你的吗？</p>
+                                </div>
+                                <p class="text-xs dark:text-gray-600 text-gray-400 mt-1.5 ml-1">14:32</p>
+                            </div>
+                        </div>
+
+                        <!-- 用户消息 1 -->
+                        <div class="flex justify-end fade-in">
+                            <div>
+                                <div class="user-bubble rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%]">
+                                    <p class="text-sm text-white leading-relaxed">我的扫地机器人无法正常回充，该怎么处理？</p>
+                                </div>
+                                <p class="text-xs dark:text-gray-600 text-gray-400 mt-1.5 text-right mr-1">14:32</p>
+                            </div>
+                        </div>
+
+                        <!-- AI 消息 2 (长回复 + Markdown) -->
+                        <div class="flex gap-3 fade-in">
+                            <div class="w-8 h-8 rounded-lg gradient-bg flex-shrink-0 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="ai-bubble-dark dark:block hidden rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%]">
+                                    <div class="text-sm text-gray-200 leading-relaxed space-y-3">
+                                        <p>根据知识库的信息，扫地机器人无法正常回充通常有以下几个原因和解决方案：</p>
+                                        <p class="font-medium text-gray-100">常见原因：</p>
+                                        <ul class="list-disc list-inside space-y-1 text-gray-300">
+                                            <li>充电座周围有障碍物，影响红外信号接收</li>
+                                            <li>充电触片脏污或氧化</li>
+                                            <li>机器人距离充电座过远，超出信号范围</li>
+                                            <li>充电座放置位置不当（靠墙太近或地面不平）</li>
+                                        </ul>
+                                        <p class="font-medium text-gray-100">解决步骤：</p>
+                                        <ol class="list-decimal list-inside space-y-1 text-gray-300">
+                                            <li>清理充电座周围 1.5 米内的障碍物</li>
+                                            <li>用干布擦拭机器人和充电座的充电触片</li>
+                                            <li>确保充电座两侧各留出 0.5 米空间</li>
+                                            <li>将机器人放在距充电座 2 米内重新尝试回充</li>
+                                        </ol>
+                                        <p class="text-gray-400 text-xs mt-2">如果以上方法仍无法解决，建议联系售后服务进行检测。</p>
+                                    </div>
+                                </div>
+                                <div class="ai-bubble-light dark:hidden block rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%]">
+                                    <div class="text-sm text-gray-700 leading-relaxed space-y-3">
+                                        <p>根据知识库的信息，扫地机器人无法正常回充通常有以下几个原因和解决方案：</p>
+                                        <p class="font-medium text-gray-900">常见原因：</p>
+                                        <ul class="list-disc list-inside space-y-1 text-gray-600">
+                                            <li>充电座周围有障碍物，影响红外信号接收</li>
+                                            <li>充电触片脏污或氧化</li>
+                                            <li>机器人距离充电座过远，超出信号范围</li>
+                                            <li>充电座放置位置不当（靠墙太近或地面不平）</li>
+                                        </ul>
+                                        <p class="font-medium text-gray-900">解决步骤：</p>
+                                        <ol class="list-decimal list-inside space-y-1 text-gray-600">
+                                            <li>清理充电座周围 1.5 米内的障碍物</li>
+                                            <li>用干布擦拭机器人和充电座的充电触片</li>
+                                            <li>确保充电座两侧各留出 0.5 米空间</li>
+                                            <li>将机器人放在距充电座 2 米内重新尝试回充</li>
+                                        </ol>
+                                        <p class="text-gray-400 text-xs mt-2">如果以上方法仍无法解决，建议联系售后服务进行检测。</p>
+                                    </div>
+                                </div>
+                                <!-- 操作按钮 -->
+                                <div class="flex items-center gap-2 mt-2 ml-1">
+                                    <button class="p-1.5 rounded-md dark:hover:bg-dark-card hover:bg-gray-200 transition-colors group" title="复制">
+                                        <svg class="w-3.5 h-3.5 dark:text-gray-500 text-gray-400 group-hover:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    </button>
+                                    <button class="p-1.5 rounded-md dark:hover:bg-dark-card hover:bg-gray-200 transition-colors group" title="重新生成">
+                                        <svg class="w-3.5 h-3.5 dark:text-gray-500 text-gray-400 group-hover:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                    </button>
+                                    <p class="text-xs dark:text-gray-600 text-gray-400 ml-2">14:33</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 用户消息 2 -->
+                        <div class="flex justify-end fade-in">
+                            <div>
+                                <div class="user-bubble rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%]">
+                                    <p class="text-sm text-white leading-relaxed">帮我生成一份本月的使用报告</p>
+                                </div>
+                                <p class="text-xs dark:text-gray-600 text-gray-400 mt-1.5 text-right mr-1">14:35</p>
+                            </div>
+                        </div>
+
+                        <!-- AI 正在输入 -->
+                        <div class="flex gap-3 fade-in">
+                            <div class="w-8 h-8 rounded-lg gradient-bg flex-shrink-0 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="ai-bubble-dark dark:block hidden rounded-2xl rounded-tl-sm px-4 py-4">
+                                <div class="flex items-center gap-1.5">
+                                    <div class="w-2 h-2 rounded-full gradient-bg typing-dot"></div>
+                                    <div class="w-2 h-2 rounded-full gradient-bg typing-dot"></div>
+                                    <div class="w-2 h-2 rounded-full gradient-bg typing-dot"></div>
+                                    <span class="text-xs text-gray-500 ml-2">正在思考...</span>
+                                </div>
+                            </div>
+                            <div class="ai-bubble-light dark:hidden block rounded-2xl rounded-tl-sm px-4 py-4">
+                                <div class="flex items-center gap-1.5">
+                                    <div class="w-2 h-2 rounded-full gradient-bg typing-dot"></div>
+                                    <div class="w-2 h-2 rounded-full gradient-bg typing-dot"></div>
+                                    <div class="w-2 h-2 rounded-full gradient-bg typing-dot"></div>
+                                    <span class="text-xs text-gray-400 ml-2">正在思考...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 输入区域 -->
+                <div class="p-4 border-t dark:border-dark-border border-gray-200 theme-transition dark:bg-dark-bg bg-gray-50">
+                    <div class="max-w-3xl mx-auto">
+                        <div class="input-glow flex items-end gap-3 dark:bg-dark-card bg-white rounded-2xl px-4 py-3 border dark:border-dark-border border-gray-200 transition-all">
+                            <textarea rows="1" placeholder="输入你的问题..." class="flex-1 bg-transparent resize-none outline-none text-sm dark:text-gray-200 text-gray-800 dark:placeholder-gray-500 placeholder-gray-400 max-h-[120px] leading-relaxed"></textarea>
+                            <button class="p-2 rounded-lg gradient-bg text-white hover:opacity-90 transition-opacity flex-shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                            </button>
+                        </div>
+                        <p class="text-xs dark:text-gray-600 text-gray-400 text-center mt-2">Enter 发送 / Shift + Enter 换行</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 主题切换脚本 -->
+    <script>
+        const app = document.getElementById('app');
+        const toggle = document.getElementById('themeToggle');
+
+        // 读取本地存储的主题偏好
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            app.classList.remove('dark');
+            app.classList.add('light');
+        }
+
+        toggle.addEventListener('click', () => {
+            if (app.classList.contains('dark')) {
+                app.classList.remove('dark');
+                app.classList.add('light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                app.classList.remove('light');
+                app.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
+</body>
+</html>

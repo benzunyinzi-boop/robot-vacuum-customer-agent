@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智扫通智能客服 - 欢迎页</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { bg: '#0f0f23', sidebar: '#1a1a2e', card: '#16213e', border: '#334155' }
+                    },
+                    fontFamily: { sans: ['Inter', 'Noto Sans SC', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glow-border { box-shadow: 0 0 15px rgba(0, 212, 255, 0.08); }
+        .gradient-bg { background: linear-gradient(135deg, #00d4ff, #7c3aed); }
+        .gradient-text { background: linear-gradient(135deg, #00d4ff, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .quick-card {
+            background: rgba(22, 33, 62, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            transition: all 0.3s ease;
+        }
+        .quick-card:hover {
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .light .quick-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            backdrop-filter: none;
+        }
+        .light .quick-card:hover {
+            border-color: rgba(37, 99, 235, 0.5);
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08);
+        }
+        .input-glow:focus-within {
+            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.3), 0 0 20px rgba(0, 212, 255, 0.1);
+        }
+        .light .input-glow:focus-within {
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3), 0 0 20px rgba(37, 99, 235, 0.05);
+        }
+        .logo-pulse {
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.3)); }
+            50% { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6)); }
+        }
+        .divider-glow {
+            background: linear-gradient(180deg, transparent, rgba(0,212,255,0.3), transparent);
+            width: 1px;
+        }
+        .light .divider-glow {
+            background: linear-gradient(180deg, transparent, rgba(37,99,235,0.2), transparent);
+        }
+        .sidebar-item-active {
+            background: linear-gradient(90deg, rgba(0,212,255,0.1), transparent);
+            border-left: 3px solid #00d4ff;
+        }
+        .light .sidebar-item-active {
+            background: linear-gradient(90deg, rgba(37,99,235,0.08), transparent);
+            border-left: 3px solid #2563eb;
+        }
+        .theme-transition { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+        .scrollbar-thin::-webkit-scrollbar { width: 4px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+    <div id="app" class="dark">
+        <div class="flex h-screen theme-transition dark:bg-dark-bg bg-gray-50">
+
+            <!-- 侧边栏 -->
+            <aside class="w-[280px] flex flex-col theme-transition dark:bg-dark-sidebar bg-white border-r dark:border-dark-border border-gray-200">
+                <div class="p-4 border-b dark:border-dark-border border-gray-200">
+                    <button class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg gradient-bg text-white font-medium text-sm hover:opacity-90 transition-opacity">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        新建对话
+                    </button>
+                </div>
+                <div class="flex-1 overflow-y-auto scrollbar-thin p-3 space-y-1">
+                    <p class="text-xs font-medium dark:text-gray-500 text-gray-400 px-3 py-2 uppercase tracking-wider">今天</p>
+                    <div class="sidebar-item-active rounded-lg px-3 py-2.5 cursor-pointer">
+                        <p class="text-sm dark:text-gray-200 text-gray-800 truncate font-medium">新对话</p>
+                        <p class="text-xs dark:text-gray-500 text-gray-400 mt-0.5">刚刚</p>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="divider-glow"></div>
+
+            <!-- 主内容区 -->
+            <main class="flex-1 flex flex-col">
+                <!-- 顶部导航 -->
+                <header class="h-16 flex items-center justify-between px-6 border-b dark:border-dark-border border-gray-200 theme-transition dark:bg-dark-bg bg-gray-50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center logo-pulse">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </div>
+                        <h1 class="text-lg font-semibold dark:text-white text-gray-900">智扫通</h1>
+                        <span class="text-xs dark:text-gray-500 text-gray-400 dark:bg-dark-card bg-gray-100 px-2 py-0.5 rounded-full">智能客服</span>
+                    </div>
+                    <button id="themeToggle" class="p-2 rounded-lg dark:hover:bg-dark-card hover:bg-gray-200 transition-colors">
+                        <svg id="moonIcon" class="w-5 h-5 dark:text-gray-400 text-gray-600 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        <svg id="sunIcon" class="w-5 h-5 dark:text-gray-400 text-gray-600 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    </button>
+                </header>
+
+                <!-- 欢迎区域 -->
+                <div class="flex-1 flex items-center justify-center overflow-y-auto">
+                    <div class="max-w-2xl mx-auto px-6 text-center">
+                        <!-- Logo 大图 -->
+                        <div class="w-20 h-20 rounded-2xl gradient-bg flex items-center justify-center mx-auto mb-6 logo-pulse">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </div>
+
+                        <!-- 欢迎语 -->
+                        <h2 class="text-2xl font-semibold dark:text-white text-gray-900 mb-2">你好，我是智扫通智能客服</h2>
+                        <p class="dark:text-gray-400 text-gray-500 mb-8">专注于扫地机器人和扫拖一体机器人的咨询服务，有什么可以帮你？</p>
+
+                        <!-- 快捷问题卡片 -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="quick-card rounded-xl p-4 cursor-pointer text-left">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-lg dark:bg-blue-500/10 bg-blue-50 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 dark:text-blue-400 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium dark:text-gray-200 text-gray-800">功能介绍</p>
+                                        <p class="text-xs dark:text-gray-400 text-gray-500 mt-1">扫地机器人有哪些主要功能？</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quick-card rounded-xl p-4 cursor-pointer text-left">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-lg dark:bg-amber-500/10 bg-amber-50 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 dark:text-amber-400 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium dark:text-gray-200 text-gray-800">故障排除</p>
+                                        <p class="text-xs dark:text-gray-400 text-gray-500 mt-1">机器人无法回充怎么办？</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quick-card rounded-xl p-4 cursor-pointer text-left">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-lg dark:bg-green-500/10 bg-green-50 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 dark:text-green-400 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium dark:text-gray-200 text-gray-800">选购指南</p>
+                                        <p class="text-xs dark:text-gray-400 text-gray-500 mt-1">如何选购适合的扫地机器人？</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quick-card rounded-xl p-4 cursor-pointer text-left">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-lg dark:bg-purple-500/10 bg-purple-50 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 dark:text-purple-400 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium dark:text-gray-200 text-gray-800">使用报告</p>
+                                        <p class="text-xs dark:text-gray-400 text-gray-500 mt-1">生成我的个性化使用报告</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 输入区域 -->
+                <div class="p-4 border-t dark:border-dark-border border-gray-200 theme-transition dark:bg-dark-bg bg-gray-50">
+                    <div class="max-w-3xl mx-auto">
+                        <div class="input-glow flex items-end gap-3 dark:bg-dark-card bg-white rounded-2xl px-4 py-3 border dark:border-dark-border border-gray-200 transition-all">
+                            <textarea rows="1" placeholder="输入你的问题..." class="flex-1 bg-transparent resize-none outline-none text-sm dark:text-gray-200 text-gray-800 dark:placeholder-gray-500 placeholder-gray-400 max-h-[120px] leading-relaxed"></textarea>
+                            <button class="p-2 rounded-lg gradient-bg text-white hover:opacity-90 transition-opacity flex-shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                            </button>
+                        </div>
+                        <p class="text-xs dark:text-gray-600 text-gray-400 text-center mt-2">Enter 发送 / Shift + Enter 换行</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const app = document.getElementById('app');
+        const toggle = document.getElementById('themeToggle');
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') { app.classList.remove('dark'); app.classList.add('light'); }
+        toggle.addEventListener('click', () => {
+            if (app.classList.contains('dark')) { app.classList.remove('dark'); app.classList.add('light'); localStorage.setItem('theme', 'light'); }
+            else { app.classList.remove('light'); app.classList.add('dark'); localStorage.setItem('theme', 'dark'); }
+        });
+    </script>
+</body>
+</html>
