@@ -54,7 +54,7 @@
 ### 2. Agent 工具调用
 展示 Agent 调用 RAG 检索、外部工具的推理过程
 
-<img src="assets/chat2.png" width="700"/>
+<img src="assets/chatting.png" width="700"/>
 
 ### 3. 报告生成
 根据用户数据生成个性化使用分析报告
